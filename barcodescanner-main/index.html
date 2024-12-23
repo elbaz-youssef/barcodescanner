@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Barcode Scanner Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <style>
+        #reader {
+            width: 100%;
+            max-width: 640px;
+            margin: auto;
+            display: block;
+            
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 style="text-align: center;">Barcode Scanner Demo</h2>
+    <div style="text-align: center; height: 40vh;">
+        <div id="reader"></div>
+        <div id="result"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" integrity="sha512-r6rDA7W6ZeQhvl8S7yRVQUKVHdexq+GAlNkNNqVC7YyIV+NwqCTJe2hDWCiffTyRNOeGEzRRJ9ifvRm/HCzGYg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    <script>
+        // Function to handle the QR code and Barcode scanning result
+        
+
+        // Function to handle errors during scanning
+        function onScanError(errorMessage) {
+            // This will be called if there is an error during scanning (like no QR code detected)
+            console.log(errorMessage);
+        }
+
+        // Function to check if the barcode is sufficiently large and centered in the scan area
+        // function isBarcodeValid(decodedResult) {
+        //     const resultWidth = decodedResult.box.width;
+        //     const resultHeight = decodedResult.box.height;
+
+        //     // Ensure that the barcode occupies at least 50% of the scanning area (for example)
+        //     const minSizeRatio = 0.5;  // Minimum ratio for the barcode size
+        //     const scanArea = document.querySelector('#reader').getBoundingClientRect();
+        //     const scanWidth = scanArea.width;
+        //     const scanHeight = scanArea.height;
+
+        //     const sizeRatio = (resultWidth * resultHeight) / (scanWidth * scanHeight);
+        //     const isCentered = isBarcodeCentered(decodedResult, scanArea);
+
+        //     return sizeRatio > minSizeRatio && isCentered;
+        // }
+
+        // Function to check if the barcode is centered enough in the scanning area
+        // function isBarcodeCentered(decodedResult, scanArea) {
+        //     const resultBox = decodedResult.box;
+        //     const resultCenterX = (resultBox[0].x + resultBox[2].x) / 2;
+        //     const resultCenterY = (resultBox[0].y + resultBox[2].y) / 2;
+
+        //     const scanCenterX = scanArea.left + scanArea.width / 2;
+        //     const scanCenterY = scanArea.top + scanArea.height / 2;
+
+        //     // Allow a margin of 20% from the center of the scanning area
+        //     const margin = 0.2;
+        //     const xWithinRange = Math.abs(resultCenterX - scanCenterX) < scanArea.width * margin;
+        //     const yWithinRange = Math.abs(resultCenterY - scanCenterY) < scanArea.height * margin;
+
+        //     return xWithinRange && yWithinRange;
+        // }
+
+        let html5QrCode;
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Display the result
+            
+            // if (isBarcodeValid(decodedResult)) {
+                document.getElementById('result').innerHTML = `Scanned result: ${decodedText}`;
+                console.log(`QR Code scanned: ${decodedText}`);
+                html5QrCode.stop()
+                // alert(decodedResult.codeBounds.width)
+                
+            // } else {
+            //     console.log('Detected barcode/QR code is not fully in frame.');
+            // }
+        }
+
+        // Initialize the HTML5 QR scanner
+        function startScanner() {
+            html5QrCode = new Html5Qrcode("reader");
+
+            // Start scanning for QR code and barcode
+            html5QrCode.start(
+                { facingMode: "environment" }, // Use rear camera
+                {
+                    fps: 10, // Set the frames per second (FPS) for the scanner
+                    qrbox: { width: 300, height: 150 }, // Set the scanning box size
+                    decoder: {
+                        readers: ["code_128_reader", "code_39_reader"],  // Only enable Code 39 and Code 128 readers
+                        qrCodeSupported: false,
+                    }
+                },
+                onScanSuccess, // Success callback function
+                onScanError    // Error callback function
+            ).catch(err => {
+                // Handle any errors during scanner start
+                console.error("Error starting the scanner:", err);
+            });
+        }
+
+        // Start scanning as soon as the page loads
+        window.onload = startScanner;
+    </script>
+
+</body>
+</html>
