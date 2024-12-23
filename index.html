@@ -24,6 +24,7 @@
     <h2 style="text-align: center;">Barcode Scanner Demo</h2>
     <div style="text-align: center; height: 40vh;">
         <div id="reader"></div>
+        <button id="scan_button" class="btn btn-secondary">Scanner Code à bare</button>
         <div id="result"></div>
     </div>
 
@@ -111,7 +112,7 @@
         }
 
         // Start scanning as soon as the page loads
-        window.onload = startScanner;
+        document.getElementById("scan_button").addEventListener('click', startScanner);
     </script>
 
 </body>
